@@ -21,11 +21,8 @@ class Dataset(torch.utils.data.Dataset):
     self.split = split
     self.level = level
     self.w, self.h = data_args['w'], data_args['h']
-    if split == 'train':
-      self.root_path = os.path.join(data_args['zip_root'], "train", "train001")
-    else:
-      self.root_path = os.path.join(data_args['zip_root'], "eval", "eval001")
-    self.data = os.listdir(self.root_path)
+    self.data = [os.path.join(data_args['zip_root'], data_args['name'], i) 
+      for i in np.genfromtxt(os.path.join(data_args['flist_root'], data_args['name'], split+'.flist'), dtype=np.str, encoding='utf-8')]
     self.mask_type = data_args.get('mask', 'pconv')
     if self.mask_type == 'pconv':
       self.mask = [os.path.join(data_args['zip_root'], 'mask/{}.png'.format(str(i).zfill(5))) for i in range(2000, 12000)]
@@ -35,6 +32,7 @@ class Dataset(torch.utils.data.Dataset):
     else:
       self.mask = [0]*len(self.data)
     self.data.sort()
+    
     if split == 'train':
       self.data = self.data*data_args['extend']
       shuffle(self.data)
@@ -58,10 +56,9 @@ class Dataset(torch.utils.data.Dataset):
 
   def load_item(self, index):
     # load image
-    img_name = self.data[index]
-    img_path = os.path.join(self.root_path, img_name)
-    img = Image.open(img_path).convert('RGB')
-
+    img_path = os.path.dirname(self.data[index]) + '.zip'
+    img_name = os.path.basename(self.data[index])
+    img = ZipReader.imread(img_path, img_name).convert('RGB')
     # load mask 
     if self.mask_type == 'pconv':
       m_index = random.randint(0, len(self.mask)-1) if self.split == 'train' else index
@@ -70,21 +67,11 @@ class Dataset(torch.utils.data.Dataset):
       mask = ZipReader.imread(mask_path, mask_name).convert('L')
     else:
       m = np.zeros((self.h, self.w)).astype(np.uint8)
-
-      x1 = random.randint(5, 7)
-      w1 = random.randint(20, 34)
-      # w1 = random.randint(45, 50)
-      y1 = random.randint(5, 7)
-      h1 = random.randint(45, 50)
-      m[x1: w1, y1: h1] = 255
-
-      # if self.split == 'train':
-      #   t, l = random.randint(0, self.h//2), random.randint(0, self.w//2)
-      #   m[t:t+self.h//2, l:l+self.w//2] = 255
-      # else:
-      #   t, l = random.randint(0, self.h // 2), random.randint(0, self.w // 2)
-      #   m[t:t + self.h // 2, l:l + self.w // 2] = 255
-
+      if self.split == 'train':
+        t, l = random.randint(0, self.h//2), random.randint(0, self.w//2)
+        m[t:t+self.h//2, l:l+self.w//2] = 255
+      else:
+        m[self.h//4:self.h*3//4, self.w//4:self.w*3//4] = 255
       mask = Image.fromarray(m).convert('L')
     # augment 
     if self.split == 'train': 

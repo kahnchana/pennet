@@ -33,7 +33,7 @@ import glob
 ### My libs
 from core.utils import set_device, postprocess, ZipReader, set_seed
 from core.utils import postprocess
-from core.dataset import Dataset
+from core.dataset_custom import Dataset
  
 
 parser = argparse.ArgumentParser(description="MGP")
@@ -45,7 +45,7 @@ parser.add_argument("-s", "--size", default=None, type=int)
 parser.add_argument("-p", "--port", type=str, default="23451")
 args = parser.parse_args()
 
-BATCH_SIZE = 4
+BATCH_SIZE = 1
 
 def main_worker(gpu, ngpus_per_node, config):
   torch.cuda.set_device(gpu)
@@ -63,7 +63,7 @@ def main_worker(gpu, ngpus_per_node, config):
   # prepare dataset
   dataset = Dataset(config['data_loader'], debug=False, split='test', level=args.level)
   step = math.ceil(len(dataset) / ngpus_per_node)
-  dataset.set_subset(gpu*step, min(gpu*step+step, len(dataset)))
+  # dataset.set_subset(gpu*step, min(gpu*step+step, len(dataset)))
   dataloader = DataLoader(dataset, batch_size= BATCH_SIZE, shuffle=False, num_workers=config['trainer']['num_workers'], pin_memory=True)
 
   path = os.path.join(config['save_dir'], 'results_{}_level_{}'.format(str(latest_epoch).zfill(5), str(args.level).zfill(2)))
@@ -80,11 +80,18 @@ def main_worker(gpu, ngpus_per_node, config):
     mask_imgs = postprocess(images_masked)
     comp_imgs = postprocess((1-masks)*images+masks*output)
     pred_imgs = postprocess(output)
+
+    # for i in range(len(orig_imgs)):
+    #   Image.fromarray(pred_imgs[i]).save(os.path.join(path, '{}_pred.png'.format(names[i].split('.')[0])))
+    #   Image.fromarray(orig_imgs[i]).save(os.path.join(path, '{}_orig.png'.format(names[i].split('.')[0])))
+    #   Image.fromarray(comp_imgs[i]).save(os.path.join(path, '{}_comp.png'.format(names[i].split('.')[0])))
+    #   Image.fromarray(mask_imgs[i]).save(os.path.join(path, '{}_mask.png'.format(names[i].split('.')[0])))
+
     for i in range(len(orig_imgs)):
-      Image.fromarray(pred_imgs[i]).save(os.path.join(path, '{}_pred.png'.format(names[i].split('.')[0])))
-      Image.fromarray(orig_imgs[i]).save(os.path.join(path, '{}_orig.png'.format(names[i].split('.')[0])))
-      Image.fromarray(comp_imgs[i]).save(os.path.join(path, '{}_comp.png'.format(names[i].split('.')[0])))
-      Image.fromarray(mask_imgs[i]).save(os.path.join(path, '{}_mask.png'.format(names[i].split('.')[0])))
+      Image.fromarray(pred_imgs[i]).save(os.path.join(path, '{:03d}_pred.png'.format(idx)))
+      Image.fromarray(orig_imgs[i]).save(os.path.join(path, '{:03d}_orig.png'.format(idx)))
+      Image.fromarray(comp_imgs[i]).save(os.path.join(path, '{:03d}_comp.png'.format(idx)))
+      Image.fromarray(mask_imgs[i]).save(os.path.join(path, '{:03d}_mask.png'.format(idx)))
   print('Finish in {}'.format(path))
 
 

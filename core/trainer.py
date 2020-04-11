@@ -21,7 +21,7 @@ from tensorboardX import SummaryWriter
 from torchvision.utils import make_grid, save_image
 import torch.distributed as dist
 
-from core.dataset import Dataset
+from core.dataset_custom import Dataset
 from core.utils import set_seed, set_device, Progbar, postprocess
 from core.loss import AdversarialLoss, PerceptualLoss, StyleLoss, VGG19
 from core import metric as module_metric
