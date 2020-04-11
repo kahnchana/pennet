@@ -4,7 +4,7 @@
     "data_loader": {
         "name": "celebahq",
         "dataset": "linneaus5",
-        "zip_root": "/home/kanchana/Downloads/public_datasets",
+        "zip_root": "/home/ubuntu/data/public_datasets/",
         "flist_root": "/home/kanchana/Downloads/public_datasets/celebahq/flist",
         "mask": "square",
         "extend": 5,
