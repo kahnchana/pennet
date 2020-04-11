@@ -33,8 +33,8 @@ class Dataset(torch.utils.data.Dataset):
             if data_args["dataset"].startswith("linneaus5"):
                 data_root = "{}/Linnaeus 5 64X64/test".format(data_root)
 
-        # self.data = dataset_dict[data_args["dataset"]](root=data_root, split=split, download=False)
-        self.data = dataset_dict[data_args["dataset"]](root=data_root)
+        self.data = dataset_dict[data_args["dataset"]](root=data_root, image_set='train', download=False)
+        # self.data = dataset_dict[data_args["dataset"]](root=data_root)
 
         self.split = split
         self.level = level
