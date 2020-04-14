@@ -2,9 +2,9 @@
     "seed": 2020,
     "save_dir": "release_model/",
     "data_loader": {
-        "name": "celebahq",
-        "dataset": "linneaus5",
-        "zip_root": "/home/ubuntu/data/public_datasets/",
+        "name": "paris",
+        "dataset": "paris",
+        "zip_root": "/home/ubuntu/data/public_datasets/paris/train",
         "flist_root": "/home/kanchana/Downloads/public_datasets/celebahq/flist",
         "mask": "square",
         "extend": 5,
@@ -28,11 +28,11 @@
         "beta2": 0.999,
         "verbosity": 2,
         "iterations": 33e4,
-        "save_freq": 1e3,
+        "save_freq": 5e3,
         "valid_freq": 1e4,
         "niter": 10e4,
         "niter_steady": 1e4,
-        "batch_size": 32,
+        "batch_size": 256,
         "num_workers": 4,
         "log_step": 100
     }

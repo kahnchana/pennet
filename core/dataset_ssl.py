@@ -18,7 +18,6 @@ dataset_dict = {
     "stl10": torchvision.datasets.STL10,
     "pascal": torchvision.datasets.VOCDetection,
     "linneaus5": torchvision.datasets.ImageFolder,
-    "paris": torchvision.datasets.ImageFolder
 }
 
 
@@ -34,9 +33,8 @@ class Dataset(torch.utils.data.Dataset):
             if data_args["dataset"].startswith("linneaus5"):
                 data_root = "{}/Linnaeus 5 64X64/test".format(data_root)
 
-        # self.data = dataset_dict[data_args["dataset"]](root=data_root, image_set='val', download=False)
-        # self.data = torchvision.datasets.ImageFolder("/home/kanchana/Downloads/public_datasets/test_data/compare_paris04")
-        self.data = dataset_dict[data_args["dataset"]](root=data_root)
+        self.data = dataset_dict[data_args["dataset"]](root=data_root, image_set='val', download=False)
+        # self.data = dataset_dict[data_args["dataset"]](root=data_root)
 
         self.split = split
         self.level = level
@@ -67,13 +65,11 @@ class Dataset(torch.utils.data.Dataset):
         # load mask
         m = np.zeros((self.h, self.w)).astype(np.uint8)
         x1 = random.randint(5, 7)
-        # w1 = random.randint(20, 34)
-        w1 = random.randint(20, 50)
+        w1 = random.randint(20, 34)
+        # w1 = random.randint(45, 50)
         y1 = random.randint(5, 7)
-        h1 = random.randint(20, 50)
-
+        h1 = random.randint(45, 50)
         m[x1: w1, y1: h1] = 255
-        # m[16: 48, 16: 48] = 255
 
         mask = Image.fromarray(m).convert('L')
         # augment
