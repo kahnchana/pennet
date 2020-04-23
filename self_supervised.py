@@ -4,7 +4,7 @@ from sklearn.metrics import f1_score
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from core.dataset_ssl import Dataset, MultiClassHingeLoss
+from core.helpers_ssl import Dataset, MultiClassHingeLoss
 from core.utils import set_device
 from model.pennet import InpaintGenerator
 
