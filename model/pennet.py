@@ -165,8 +165,9 @@ class InpaintGenerator(BaseNetwork):
     img1 = self.torgb1(torch.cat([upx1, x1], dim=1))
     # output 
     output = self.decoder(F.interpolate(torch.cat([upx1, x1], dim=1), scale_factor=2, mode='bilinear', align_corners=True))
-    pyramid_imgs = [img1, img2, img3, img4, img5]
-    return  pyramid_imgs, output
+    # pyramid_imgs = [img1, img2, img3, img4, img5]
+    pyramid_imgs = [upx1, upx2, upx3, upx4, upx5]
+    return pyramid_imgs, output
 
 
 class Discriminator(BaseNetwork):
@@ -373,4 +374,4 @@ def test_contextual_attention(args):
 
 if __name__ == '__main__':
   import sys
-  test_contextual_attention(sys.argv)
+  # test_contextual_attention(sys.argv)
