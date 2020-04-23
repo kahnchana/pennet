@@ -17,7 +17,10 @@ from core.utils import ZipReader
 class Dataset(torch.utils.data.Dataset):
     def __init__(self, data_args=None, split='train', level=None, debug=None):
         data_root = "/home/kanchana/Downloads/public_datasets"
-        self.data = torchvision.datasets.CIFAR10(root=data_root, train=False, download=False)
+        if split == "train":
+            self.data = torchvision.datasets.CIFAR10(root=data_root, train=True, download=False)
+        else:
+            self.data = torchvision.datasets.CIFAR10(root=data_root, train=False, download=False)
         self.split = split
         self.level = level
         self.w, self.h = 64, 64
