@@ -1,3 +1,9 @@
+# Project Specific
+SSL_trained_models/
+best.model
+new_model/
+release_model/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
